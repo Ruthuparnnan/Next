@@ -2,18 +2,18 @@ import { NextRequest } from "next/server";
 import { comments } from "./data";
 
 export async function GET(reqeust) {
-  //   const searchParams = reqeust?.nextUrl?.searchParams;
-  //   const query = searchParams.get("query");
-  //   const filteredComments = query
-  //     ? comments.filter((item) => item?.text?.includes(query))
-  //     : comments;
-  //   return Response.json(filteredComments);
-  return new Response("<h1>killadi thenne</h1>", {
-    headers: {
-      "Content-Type": "text/html",
-      "Set-Cookie": "theme=dark",
-    },
-  });
+  const searchParams = reqeust?.nextUrl?.searchParams;
+  const query = searchParams.get("query");
+  const filteredComments = query
+    ? comments.filter((item) => item?.text?.includes(query))
+    : comments;
+  return Response.json(filteredComments);
+  // return new Response("<h1>killadi thenne</h1>", {
+  //   headers: {
+  //     "Content-Type": "text/html",
+  //     "Set-Cookie": "theme=dark",
+  //   },
+  // });
 }
 
 export async function POST(reqeust) {
