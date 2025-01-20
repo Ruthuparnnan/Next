@@ -7,10 +7,12 @@ import {
   Container,
   Button,
   Box,
+  Typography,
 } from "@mui/material";
+import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addHabit } from "../store/habits-slice";
+import { addHabit, deleteHabit } from "../store/habits-slice";
 
 function HabitsList() {
   const [habit, setHabit] = useState("");
@@ -59,8 +61,28 @@ function HabitsList() {
           </Stack>
           {habitsList?.map((item, index) => (
             <Card key={index} sx={{ border: "1px solid #929292" }}>
-              <CardHeader title={item?.title} />
-              <CardContent>{item?.habit}</CardContent>
+              <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                <CardHeader title={item?.title} />
+                <Button
+                  variant="outlined"
+                  color="error"
+                  sx={{}}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    dispatch(deleteHabit({ id: item?.id }));
+                  }}
+                >
+                  Delete
+                </Button>
+              </Box>
+              <CardContent>
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography>{item?.habit}</Typography>
+                  <Typography>
+                    {format(new Date(item?.createdAt), "dd MMMM yyyy hh:mm:aa")}
+                  </Typography>
+                </Box>
+              </CardContent>
             </Card>
           ))}
         </Stack>
