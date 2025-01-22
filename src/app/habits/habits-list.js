@@ -10,7 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { format } from "date-fns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addHabit,
@@ -18,11 +18,14 @@ import {
   addHabitAsync,
   getLoading,
   getHabits,
+  getTodos,
+  fetchTodos,
 } from "../store/habits-slice";
 
 function HabitsList() {
   const [habit, setHabit] = useState("");
   const habitsList = useSelector(getHabits);
+  const toDosList = useSelector(getTodos);
   const loading = useSelector(getLoading);
   const dispatch = useDispatch();
   const handleChangeHabit = (e) => {
@@ -44,6 +47,12 @@ function HabitsList() {
     );
     setHabit("");
   };
+
+  useEffect(() => {
+    dispatch(fetchTodos());
+  }, [dispatch]);
+
+  console.log("list of todos", toDosList);
 
   return (
     <Container maxWidth="md">

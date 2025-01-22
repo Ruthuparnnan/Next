@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 const habitsSlice = createSlice({
   name: "goodHabits",
-  initialState: { habits: [], loading: false },
+  initialState: { habits: [], toDos: [], loading: false },
   reducers: {
     addHabit: (state, action) => {
       const newHabit = {
@@ -31,6 +32,14 @@ const habitsSlice = createSlice({
           createdAt: new Date().toISOString(),
         });
       });
+    builder
+      .addCase(fetchTodos.pending, (state, action) => {
+        state.loading = true;
+      })
+      .addCase(fetchTodos.fulfilled, (state, action) => {
+        state.loading = false;
+        state.toDos.push(...action.payload);
+      });
   },
 });
 
@@ -44,8 +53,16 @@ export const addHabitAsync = createAsyncThunk(
   }
 );
 
+export const fetchTodos = createAsyncThunk("goodHabits/getTodos", async () => {
+  const { data } = await axios.get(
+    "https://jsonplaceholder.typicode.com/todos"
+  );
+  return data?.slice(0, 10);
+});
+
 export const getLoading = (state) => state.goodHabits.loading;
 export const getHabits = (state) => state.goodHabits.habits;
+export const getTodos = (state) => state.goodHabits.toDos;
 
 export const { addHabit, deleteHabit } = habitsSlice.actions;
 export default habitsSlice.reducer;
