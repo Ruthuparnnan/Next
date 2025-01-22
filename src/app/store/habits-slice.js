@@ -1,8 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const habitsSlice = createSlice({
   name: "goodHabits",
-  initialState: [],
+  initialState: { habits: [], loading: false },
   reducers: {
     addHabit: (state, action) => {
       const newHabit = {
@@ -11,13 +11,41 @@ const habitsSlice = createSlice({
         habit: action.payload.habit,
         createdAt: new Date().toISOString(),
       };
-      state.push(newHabit);
+      state.habits.push(newHabit);
     },
     deleteHabit: (state, action) => {
-      return state.filter((habit) => action.payload?.id !== habit.id);
+      return state.habits.filter((habit) => action.payload?.id !== habit.id);
     },
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(addHabitAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(addHabitAsync.fulfilled, (state, action) => {
+        state.loading = false;
+        state.habits.push({
+          title: action.payload.title,
+          habit: action.payload.habit,
+          id: Date.now().toString(),
+          createdAt: new Date().toISOString(),
+        });
+      });
+  },
 });
+
+export const addHabitAsync = createAsyncThunk(
+  "goodHabits/addHabitAsync",
+  async (habit) => {
+    const data = await new Promise((resolve, reject) =>
+      setTimeout(() => resolve(habit), 3000)
+    );
+    return data;
+  }
+);
+
+export const getLoading = (state) => state.goodHabits.loading;
+export const getHabits = (state) => state.goodHabits.habits;
 
 export const { addHabit, deleteHabit } = habitsSlice.actions;
 export default habitsSlice.reducer;

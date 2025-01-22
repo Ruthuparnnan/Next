@@ -12,11 +12,18 @@ import {
 import { format } from "date-fns";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addHabit, deleteHabit } from "../store/habits-slice";
+import {
+  addHabit,
+  deleteHabit,
+  addHabitAsync,
+  getLoading,
+  getHabits,
+} from "../store/habits-slice";
 
 function HabitsList() {
   const [habit, setHabit] = useState("");
-  const habitsList = useSelector((state) => state.goodHabits);
+  const habitsList = useSelector(getHabits);
+  const loading = useSelector(getLoading);
   const dispatch = useDispatch();
   const handleChangeHabit = (e) => {
     e.preventDefault();
@@ -26,8 +33,12 @@ function HabitsList() {
   const onSubmit = (e, data) => {
     e.preventDefault();
     dispatch(
-      addHabit({
-        title: "One percent better",
+      // addHabit({
+      //   title: "One percent better",
+      //   habit,
+      // })
+      addHabitAsync({
+        title: "Aync Habit",
         habit,
       })
     );
@@ -59,6 +70,7 @@ function HabitsList() {
               Add
             </Button>
           </Stack>
+          {loading && <h1>Loading pls wait...</h1>}
           {habitsList?.map((item, index) => (
             <Card key={index} sx={{ border: "1px solid #929292" }}>
               <Box sx={{ display: "flex", justifyContent: "space-between" }}>
